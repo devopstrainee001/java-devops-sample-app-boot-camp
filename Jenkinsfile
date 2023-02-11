@@ -1,45 +1,27 @@
-pipeline{
-    agent {label  "agentfarm" }
+pipeline {
+    agent any
+
     stages {
-        stage('Delete the workspace'){
-            steps{
-                cleanWs()
-            }
-        }
-       stage('Installing Maven'){
-           steps {
-               sh 'sudo apt-get update -y && sudo apt-get upgrade -y'
-               sh 'sudo apt install -y wget tree unzip openjdk-11-jdk maven'
-           }
-         }
-        stage ('Download Java Code'){
-            steps{
-                git branch: 'main', credentialsId: 'git-repo-creds', url: 'git@github.com:devopstrainee001/java-devops-sample-app-boot-camp.git'
-            }
-        }
-        stage('Compiling and Running Test Cases') {
+        stage('First stage') {
             steps {
-                  sh 'mvn clean'
-           	  sh 'mvn compile'
-                  sh 'mvn test'
+                echo 'this is first stage'
             }
-       }
-       stage('Creating Package') {
-           steps {
-           	   sh 'mvn package'
-       }
-   }
-      stage('Deploying Application') {
+        }
+    stage('Second Stage') {
+        steps { 
+             echo 'this is second stage'
+        }
+    }
+    stage('Third Stage') {
        steps {
-          	   script{
-                     withEnv(['JENKINS_NODE_COOKIE=dontkill']) {
-                            sh 'nohup java -jar ./target/springboot-bootcamp-0.0.1-SNAPSHOT.jar &'
-                     }
-           	   }
-       }
+            echo 'this is third stage'
+        }
      }
-
-
+    stage('Fourth stage') {
+       stage {
+            echo 'this is fourth stage'
+      }
      }
- } 
+    }
+}
 
